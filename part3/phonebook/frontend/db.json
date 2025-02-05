@@ -1,0 +1,19 @@
+{
+  "persons": [
+    {
+      "id": "7be2",
+      "name": "Antonio Matías",
+      "number": "45-78-12348"
+    },
+    {
+      "id": "500d",
+      "name": "Antonino Carotone",
+      "number": "65-17-524863"
+    },
+    {
+      "id": "05ad",
+      "name": "Julián Muñoz",
+      "number": "78-45-12356"
+    }
+  ]
+}
