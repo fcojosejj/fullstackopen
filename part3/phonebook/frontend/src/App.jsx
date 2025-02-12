@@ -54,7 +54,7 @@ const App = () => {
         }, 3000)
       }).catch(error => {
         setErrorMessage(
-          `Mr./Mrs. '${newName}' has already been deleted from the phonebook`
+          error.response.data.error
         )
         setNewName('')
         setNewNumber('')
@@ -81,6 +81,17 @@ const App = () => {
 
         setTimeout(() => {
           setSuccessMessage(null)
+        }, 3000)
+      }). catch(error => {
+        setErrorMessage(
+          error.response.data.error
+        )
+        setNewName('')
+        setNewNumber('')
+
+        setTimeout(() => {
+          setErrorMessage(null)
+          location.reload()
         }, 3000)
       })
     }
