@@ -41,8 +41,9 @@ blogsRouter.post('/', middleware.tokenExtractor, middleware.userExtractor, async
 })
 
 blogsRouter.delete('/:id', middleware.tokenExtractor, middleware.userExtractor, async (request, response) => {
-  console.log(request)
   const user = request.user
+  console.log(request.params)
+  console.log('datos del usuario', user)
   const blog = await Blog.findById(request.params.id)
 
   if (user.id.toString() !== blog.user.toString()) response.status(401).json({ error: 'unauthorized' })

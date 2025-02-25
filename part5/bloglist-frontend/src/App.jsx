@@ -17,7 +17,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs => {
-      blogs.sort ((a, b) => b.likes - a.likes)
+      blogs.sort((a, b) => b.likes - a.likes)
       setBlogs(blogs)
     })
     setChange(false)
@@ -75,15 +75,15 @@ const App = () => {
     }
   }
 
-  const handleLikeBlog = async(blog) => {
+  const handleLikeBlog = async (blog) => {
     blogService.setToken(user.token)
     await blogService.likeBlog(blog)
     setChange(true)
   }
 
-  const handleRemove = async(blog) => {
+  const handleRemove = async (blog) => {
     if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
-      try{
+      try {
         blogService.setToken(user.token)
         await blogService.removeBlog(blog)
         setChange(true)
@@ -103,7 +103,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <h2>login</h2>
+        <h2>Login</h2>
         <Message message={message} />
         <form onSubmit={handleLogin}>
           <div>
@@ -135,17 +135,19 @@ const App = () => {
       <h2>blogs</h2>
       <Message message={message} />
       <div>
-        <p>{user.name} logged in</p>
+        <p>{user.username} logged in</p>
         <button onClick={handleLogout}>logout</button>
       </div>
 
       <Togglable buttonLabel="create blog" ref={blogFormRef}>
-        <BlogForm handleNewBlog={handleNewBlog}/>
+        <BlogForm handleNewBlog={handleNewBlog} />
       </Togglable>
 
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} handleLikeBlog={handleLikeBlog} handleRemove={handleRemove} />
-      )}
+      <div data-testid='bloglist'>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} handleLikeBlog={handleLikeBlog} handleRemove={handleRemove} />
+        )}
+      </div>
     </div>
   )
 }
