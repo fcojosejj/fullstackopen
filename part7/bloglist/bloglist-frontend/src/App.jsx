@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import blogService from "./services/blogs";
 import Message from "./components/Message";
 import BlogForm from "./components/BlogForm";
@@ -9,16 +9,19 @@ import { changeNotification } from "./reducers/notificationReducer";
 import { setUser } from "./reducers/loginReducer";
 import { getAllBlogs, createBlog } from "./reducers/blogReducer";
 import BlogList from "./components/BlogList";
+import Blog from "./components/Blog";
 import { initializeUsers } from "./reducers/userReducer";
 import Users from "./components/UserList";
 import User from "./components/User";
-import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, Link, useParams, useNavigate } from 'react-router-dom'
+import Menu from "./components/Menu";
 
 const App = () => {
   const dispatch = useDispatch();
   const blogFormRef = useRef();
-  const user = window.localStorage.getItem("user")
+  const user = useSelector(state => state.user);
   const users = useSelector(state => state.users)
+  const blogs = useSelector(state => state.blogs)
 
   useEffect(() => {
     dispatch(getAllBlogs())
@@ -27,13 +30,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, [dispatch, user]);
-
-  const handleLogout = () => {
-    window.localStorage.removeItem("user");
-    blogService.setToken(null);
-    dispatch(setUser(null));
-    location.reload();
-  };
 
   const handleNewBlog = async (newBlog) => {
     try {
@@ -45,23 +41,22 @@ const App = () => {
     }
   };
 
-
-
   if (user === null) {
     return (
-      <Login />
+      <Router>
+        <Login />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Router>
     );
   }
 
   return (
     <Router>
       <div>
-        <h2>blogs</h2>
+        <Menu />
         <Message />
-        <div>
-          <p>{user.username} logged in</p>
-          <button onClick={handleLogout}>logout</button>
-        </div>
 
         <Routes>
           <Route path="/" element={
@@ -76,6 +71,7 @@ const App = () => {
 
           <Route path="/users" element={<Users />} />
           <Route path="/user/:id" element={<User users={users} />} />
+          <Route path="blogs/:id" element={<Blog blogs={blogs}/>} />
         </Routes>
       </div>
     </Router>

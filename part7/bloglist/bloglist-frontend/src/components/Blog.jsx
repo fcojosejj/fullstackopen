@@ -1,38 +1,44 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 
-const Blog = ({ blog, handleLikeBlog, handleRemove }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
+import { Button } from 'react-bootstrap'
+import { likeBlog, removeBlog } from "../reducers/blogReducer";
+import { changeNotification } from "../reducers/notificationReducer";
+import { useDispatch } from "react-redux";
+import { useParams, useNavigate } from 'react-router-dom'
+import Comments from "./Comments";
+
+const Blog = ({ blogs }) => {
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const handleLikeBlog = async (blog) => {
+    dispatch(likeBlog({ ...blog }));
   };
 
-  const [visible, setVisible] = useState(false);
-  const hideWhenVisible = { display: visible ? "none" : "" };
-  const showWhenVisible = { display: visible ? "" : "none" };
-  const user = useSelector(state => state.user)
+  const handleRemove = async (blog) => {
+    if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
+      try {
+        dispatch(removeBlog({ ...blog }))
+        dispatch(changeNotification(`Blog ${blog.title} was deleted`, 3));
+        navigate('/')
+      } catch (error) {
+        dispatch(changeNotification("Error removing blog", 3));
+      }
+    }
+  };
 
   return (
-    <div style={blogStyle} data-testid="blog">
-      <div style={hideWhenVisible}>
-        {blog.title}.<button onClick={() => setVisible(true)}>view</button>
+    <div data-testid="blog">
+      <h1>{blog.title}</h1>
+      <a href={blog.url}>{blog.url}</a>
+      <div>
+        <p>Likes: {blog.likes}</p>
+        <Button onClick={() => handleLikeBlog(blog)}>like</Button>
       </div>
-      <div style={showWhenVisible}>
-        <button onClick={() => setVisible(false)}>hide</button>
-        <p>Title: {blog.title}</p>
-        <p>Author: {blog.author}</p>
-        <p>Url: {blog.url}</p>
-        <p>
-          Likes: {blog.likes}{" "}
-          <button onClick={() => handleLikeBlog(blog)}>like</button>
-        </p>
-        {user && user.username === blog.user.username && (
-          <button onClick={() => handleRemove(blog)}>remove</button>
-        )}
-      </div>
+      <p>added by {blog.author}</p>
+      <Button onClick={() => handleRemove(blog)}>remove</Button>
+      <Comments blog={blog} />
     </div>
   );
 };

@@ -54,4 +54,19 @@ const getUsers = async () => {
   return response.data;
 };
 
-export default { setToken, getAll, login, createBlog, likeBlog, removeBlog , getUsers};
+const addComment = async (blog, comment) => {
+  const config = {
+    headers: {
+      Authorization: token,
+    },
+  };
+  blog.id = blog.id.toString();
+  const response = await axios.post(
+    baseBlogsUrl + `/${blog.id}/comments`,
+    comment,
+    config
+  );
+  return response.data;
+};
+
+export default { setToken, getAll, login, createBlog, likeBlog, removeBlog , getUsers, addComment };

@@ -1,7 +1,5 @@
 const blogsRouter = require("express").Router();
 const Blog = require("../models/blogs");
-const User = require("../models/user");
-const jwt = require("jsonwebtoken");
 const middleware = require("../utils/middleware");
 
 /* const getTokenFrom = request => {
@@ -80,6 +78,14 @@ blogsRouter.put("/:id", async (request, response) => {
     new: true,
   });
   response.status(200).json(updatedBlog);
+});
+
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const body = request.body;
+  const blog = await Blog.findById(request.params.id);
+  blog.comments.push(body);
+  const comment = await blog.save();
+  response.status(201).json(comment);
 });
 
 module.exports = blogsRouter;

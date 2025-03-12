@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Form, Button } from 'react-bootstrap'
 import PropTypes from "prop-types";
 
 const BlogForm = ({ handleNewBlog }) => {
@@ -20,7 +21,7 @@ const BlogForm = ({ handleNewBlog }) => {
   return (
     <div>
       <h2>create new blog</h2>
-      <form onSubmit={createBlog}>
+      <Form onSubmit={createBlog}>
         <div>
           title
           <input
@@ -45,8 +46,8 @@ const BlogForm = ({ handleNewBlog }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit">create blog</button>
-      </form>
+        <Button type="submit">create blog</Button>
+      </Form>
     </div>
   );
 };

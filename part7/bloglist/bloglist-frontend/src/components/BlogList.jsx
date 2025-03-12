@@ -1,45 +1,41 @@
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { likeBlog, removeBlog } from "../reducers/blogReducer";
-import { changeNotification } from "../reducers/notificationReducer";
-import Blog from "./Blog";
+import { useSelector } from "react-redux";
+import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
 
 const BlogList = () => {
-    const dispatch = useDispatch()
-    const initialBlogs = useSelector(state => state.blogs)
-    const [blogs, setBlogs] = useState([])
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    marginBottom: 5,
+  };
 
-    useEffect(() => {
-        setBlogs([...initialBlogs].sort((a, b) => b.likes - a.likes))
-    }, [initialBlogs]);
+  const initialBlogs = useSelector(state => state.blogs)
+  const [blogs, setBlogs] = useState([])
 
-    const handleLikeBlog = async (blog) => {
-        dispatch(likeBlog({ ...blog }));
-      };
-    
-      const handleRemove = async (blog) => {
-        if (window.confirm(`Are you sure you want to delete ${blog.title}?`)) {
-          try {
-            dispatch(removeBlog({ ...blog }))
-            dispatch(changeNotification(`Blog ${blog.title} was deleted`, 3));
-          } catch (error) {
-            dispatch(changeNotification("Error removing blog", 3));
-          }
-        }
-      };
+  useEffect(() => {
+    setBlogs([...initialBlogs].sort((a, b) => b.likes - a.likes))
+  }, [initialBlogs]);
 
-    return (
-        <div data-testid="bloglist">
-            {blogs.map((blog) => (
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    handleLikeBlog={handleLikeBlog}
-                    handleRemove={handleRemove}
-                />
-            ))}
-        </div>
-    )
+
+
+  return (
+    <div data-testid="bloglist">
+      <h1>blogs</h1>
+      <Table striped>
+        <tbody>
+          {blogs.map(blog => (
+            <tr key={blog.id}>
+              <td>
+                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+    </div>
+  )
 }
 
 export default BlogList
